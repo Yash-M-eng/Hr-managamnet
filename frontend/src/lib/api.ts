@@ -48,5 +48,11 @@ export function formatCurrency(amount: number, currency: string = 'USD'): string
   if (currency === 'INR') {
     return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);
   }
+  if (currency === 'CAD') {
+    return new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 }).format(amount);
+  }
+  if (currency === 'SGD') {
+    return new Intl.NumberFormat('en-SG', { style: 'currency', currency: 'SGD', maximumFractionDigits: 0 }).format(amount);
+  }
   return `${currency} ${amount.toLocaleString()}`;
 }
