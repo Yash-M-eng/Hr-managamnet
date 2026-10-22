@@ -51,7 +51,7 @@ services:
         fromService:
           type: web
           name: acme-salary-backend
-          property: host
+          property: hostport
       - key: NEXT_PUBLIC_DEMO_HR_EMAIL
         value: hr.manager@acme.corp
       - key: NEXT_PUBLIC_DEMO_HR_PASSWORD

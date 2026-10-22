@@ -1,40 +1,52 @@
 import axios from 'axios';
 
 const getBaseUrl = (): string => {
-  let url = process.env.NEXT_PUBLIC_API_URL || '';
+  const raw = process.env.NEXT_PUBLIC_API_URL || '';
 
-  if (typeof window !== 'undefined') {
-    const saved = localStorage.getItem('acme_api_url');
-    if (saved) return saved.trim().replace(/\/+$/, '');
-  }
+  // If an explicit URL is configured, use it (Render fromService sets this)
+  if (raw && raw.trim()) {
+    let url = raw.trim().replace(/\/+$/, '');
 
-  if (!url) {
-    if (typeof window !== 'undefined') {
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        return 'http://localhost:4000';
-      }
-      if (window.location.hostname.endsWith('.onrender.com')) {
-        const backendHost = window.location.hostname.replace('frontend', 'backend');
-        return `https://${backendHost}`;
-      }
+    // Render fromService sometimes gives just the hostname without .onrender.com
+    // e.g. "acme-salary-backend-p555" → fix to "acme-salary-backend-p555.onrender.com"
+    if (!url.includes('.') && !url.startsWith('http')) {
+      url = `https://${url}.onrender.com`;
+    } else if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      // Bare hostname with dots (e.g. acme-salary-backend-p555.onrender.com) → add https://
+      url = `https://${url}`;
     }
-    return 'http://localhost:4000';
+
+    // Upgrade http→https when frontend is on https (mixed content fix)
+    if (
+      typeof window !== 'undefined' &&
+      window.location.protocol === 'https:' &&
+      url.startsWith('http://') &&
+      !url.includes('localhost') &&
+      !url.includes('127.0.0.1')
+    ) {
+      url = url.replace(/^http:\/\//, 'https://');
+    }
+
+    return url;
   }
 
-  url = url.trim().replace(/\/+$/, '');
-  if (!url.startsWith('http://') && !url.startsWith('https://')) {
-    url = `https://${url}`;
+  // No env var set — auto-detect from current hostname
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://localhost:4000';
+    }
+
+    // On Render: frontend = acme-salary-frontend-XYZ.onrender.com
+    //            backend  = acme-salary-backend-XYZ.onrender.com
+    if (hostname.endsWith('.onrender.com')) {
+      const backendHost = hostname.replace(/-frontend(-[^.]*)?\.onrender\.com$/, '-backend$1.onrender.com');
+      return `https://${backendHost}`;
+    }
   }
-  if (
-    typeof window !== 'undefined' &&
-    window.location.protocol === 'https:' &&
-    url.startsWith('http://') &&
-    !url.includes('localhost') &&
-    !url.includes('127.0.0.1')
-  ) {
-    url = url.replace(/^http:\/\//, 'https://');
-  }
-  return url;
+
+  return 'http://localhost:4000';
 };
 
 const API_BASE_URL = getBaseUrl();
