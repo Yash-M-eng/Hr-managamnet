@@ -9,8 +9,6 @@ import {
   Building, 
   MapPin, 
   Calendar, 
-  DollarSign, 
-  Clock, 
   PlusCircle, 
   UserCheck,
   UserX
@@ -18,6 +16,7 @@ import {
 import { SalaryHistoryTimeline } from '@/components/salary/SalaryHistoryTimeline';
 import { SalaryAuditTrail } from '@/components/salary/SalaryAuditTrail';
 import { SalaryUpdateModal } from '@/components/salary/SalaryUpdateModal';
+import { EmployeeStatusModal } from '@/components/employees/EmployeeStatusModal';
 
 export default function EmployeeDetailPage() {
   const { id } = useParams() as { id: string };
@@ -27,6 +26,11 @@ export default function EmployeeDetailPage() {
   const [employee, setEmployee] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Status transition modal state (custom UI replacing browser alert/confirm)
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [statusLoading, setStatusLoading] = useState(false);
+  const [statusError, setStatusError] = useState<string | null>(null);
 
   // Salary revision modal state
   const [showSalaryModal, setShowSalaryModal] = useState(false);
@@ -90,15 +94,25 @@ export default function EmployeeDetailPage() {
     }
   };
 
-  const handleStatusToggle = async () => {
+  const handleOpenStatusModal = () => {
+    setStatusError(null);
+    setShowStatusModal(true);
+  };
+
+  const handleConfirmStatusChange = async () => {
+    if (!employee) return;
     const nextStatus = employee.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
-    if (!confirm(`Are you sure you want to transition this employee to ${nextStatus}?`)) return;
+    setStatusLoading(true);
+    setStatusError(null);
 
     try {
       await api.patch(`/employees/${id}/status`, { status: nextStatus });
+      setShowStatusModal(false);
       fetchEmployee();
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to update status');
+      setStatusError(err.response?.data?.message || 'Failed to update employee status');
+    } finally {
+      setStatusLoading(false);
     }
   };
 
@@ -169,7 +183,7 @@ export default function EmployeeDetailPage() {
 
         <div className="flex items-center gap-3 self-start md:self-auto">
           <button
-            onClick={handleStatusToggle}
+            onClick={handleOpenStatusModal}
             className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
               employee.status === 'ACTIVE'
                 ? 'bg-rose-50 hover:bg-rose-100 text-rose-600 border-rose-200'
@@ -249,6 +263,21 @@ export default function EmployeeDetailPage() {
         submitting={submitting}
         submitError={submitError}
         onSubmit={handleSalarySubmit}
+      />
+
+      {/* Custom Employee Status Transition Modal (Replaces native browser confirm/alert) */}
+      <EmployeeStatusModal
+        show={showStatusModal}
+        onClose={() => {
+          if (!statusLoading) setShowStatusModal(false);
+        }}
+        onConfirm={handleConfirmStatusChange}
+        employeeName={employee.fullName}
+        employeeCode={employee.employeeCode}
+        currentStatus={employee.status}
+        targetStatus={employee.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'}
+        loading={statusLoading}
+        error={statusError}
       />
     </div>
   );
