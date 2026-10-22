@@ -5,6 +5,7 @@ import { AuthProvider } from '@/lib/auth-context';
 import { CurrencyProvider } from '@/lib/currency-context';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { TopNav } from '@/components/layout/TopNav';
+import { FloatingAiChatbot } from '@/components/ai/FloatingAiChatbot';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -31,6 +32,8 @@ export default function RootLayout({
                   {children}
                 </div>
               </main>
+              {/* Global Floating AI Chatbot in bottom-right corner */}
+              <FloatingAiChatbot />
             </div>
           </CurrencyProvider>
         </AuthProvider>
