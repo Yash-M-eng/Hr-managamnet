@@ -1,0 +1,116 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// User accounts for HR Managers and Admins
+model User {
+  id           String             @id @default(uuid())
+  email        String             @unique
+  passwordHash String
+  name         String
+  role         String             @default("HR_MANAGER") // HR_MANAGER, ADMIN
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  auditLogs    SalaryChangeAudit[]
+
+  @@map("users")
+}
+
+// Country reference entity for multi-country organization
+model Country {
+  id           String     @id @default(uuid())
+  code         String     @unique // e.g. USA, GBR, DEU, IND, CAN, AUS
+  name         String     @unique // e.g. United States, United Kingdom, etc.
+  currency     String     // e.g. USD, GBP, EUR, INR, CAD, AUD
+  exchangeRate Float      // Fixed reference rate to USD for reporting (e.g. 1.0, 1.28, 1.08, 0.012, 0.74, 0.65)
+  employees    Employee[]
+
+  @@map("countries")
+}
+
+// Department entity
+model Department {
+  id        String     @id @default(uuid())
+  name      String     @unique // Engineering, Product, Sales, Marketing, HR, Finance, Operations, Customer Success
+  code      String     @unique // ENG, PROD, SLS, MKT, HR, FIN, OPS, CS
+  employees Employee[]
+
+  @@map("departments")
+}
+
+// Employee core model
+model Employee {
+  id            String              @id @default(uuid())
+  employeeCode  String              @unique // e.g. ACM-00001
+  firstName     String
+  lastName      String
+  email         String              @unique
+  jobTitle      String
+  status        String              @default("ACTIVE") // ACTIVE, INACTIVE, ON_LEAVE
+  departmentId  String
+  department    Department          @relation(fields: [departmentId], references: [id])
+  countryId     String
+  country       Country             @relation(fields: [countryId], references: [id])
+  hireDate      DateTime
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  salaries      SalaryRecord[]
+  auditLogs     SalaryChangeAudit[]
+
+  @@index([departmentId])
+  @@index([countryId])
+  @@index([status])
+  @@index([jobTitle])
+  @@map("employees")
+}
+
+// Salary record containing base and variable compensation
+model SalaryRecord {
+  id             String    @id @default(uuid())
+  employeeId     String
+  employee       Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  baseSalary     Float     // Stored in local currency
+  variableBonus  Float     @default(0) // Stored in local currency
+  currency       String    // Local currency (e.g. USD, EUR, INR)
+  normalizedUSD  Float     // Computed normalized annual base salary in USD for uniform reporting
+  totalNormalizedUSD Float // Computed normalized total compensation (base + bonus) in USD
+  effectiveFrom  DateTime
+  effectiveTo    DateTime? // Null indicates current active compensation
+  isCurrent      Boolean   @default(true)
+  changeReason   String?   // INITIAL_HIRE, ANNUAL_REVIEW, PROMOTION, MERIT, COST_OF_LIVING, MARKET_ADJUSTMENT
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([employeeId])
+  @@index([isCurrent])
+  @@index([currency])
+  @@index([normalizedUSD])
+  @@map("salary_records")
+}
+
+// Audit record for immutable tracking of salary adjustments
+model SalaryChangeAudit {
+  id                 String    @id @default(uuid())
+  employeeId         String
+  employee           Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  changedById        String
+  changedBy          User      @relation(fields: [changedById], references: [id])
+  previousBaseSalary Float?
+  newBaseSalary      Float
+  previousBonus      Float?
+  newBonus           Float
+  currency           String
+  changeReason       String
+  notes              String?
+  changedAt          DateTime  @default(now())
+
+  @@index([employeeId])
+  @@index([changedById])
+  @@index([changedAt])
+  @@map("salary_change_audits")
+}
