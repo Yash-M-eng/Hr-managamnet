@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/lib/auth-context';
+import { CurrencyProvider } from '@/lib/currency-context';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { TopNav } from '@/components/layout/TopNav';
 
@@ -18,20 +19,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.className} bg-slate-950 text-slate-100 min-h-screen antialiased`}>
+    <html lang="en" className="h-full overflow-hidden">
+      <body className={`${inter.className} bg-[#f4f7fb] text-slate-800 h-full overflow-hidden antialiased select-none`}>
         <AuthProvider>
-          <div className="flex min-h-screen">
-            <Sidebar />
-            <div className="flex-1 flex flex-col min-w-0">
+          <CurrencyProvider>
+            <div className="h-full w-full overflow-hidden relative">
+              <Sidebar />
               <TopNav />
-              <main className="flex-1 pl-64 pt-16 p-8 overflow-y-auto">
-                <div className="max-w-7xl mx-auto">
+              <main className="fixed top-16 left-64 right-0 bottom-0 overflow-hidden bg-[#f4f7fb]">
+                <div className="w-full h-full p-4 overflow-hidden flex flex-col min-h-0">
                   {children}
                 </div>
               </main>
             </div>
-          </div>
+          </CurrencyProvider>
         </AuthProvider>
       </body>
     </html>

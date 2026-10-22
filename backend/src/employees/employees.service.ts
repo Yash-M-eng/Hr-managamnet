@@ -16,13 +16,35 @@ export class EmployeesService {
 
     if (query.search) {
       const s = query.search.trim();
-      where.OR = [
+      const parts = s.split(/\s+/).filter(Boolean);
+
+      const orConditions: Prisma.EmployeeWhereInput[] = [
         { employeeCode: { contains: s } },
         { firstName: { contains: s } },
         { lastName: { contains: s } },
         { email: { contains: s } },
         { jobTitle: { contains: s } },
       ];
+
+      if (parts.length >= 2) {
+        // Support searching by full name "First Last" or "Last First"
+        const first = parts[0];
+        const rest = parts.slice(1).join(' ');
+        orConditions.push({
+          AND: [
+            { firstName: { contains: first } },
+            { lastName: { contains: rest } },
+          ],
+        });
+        orConditions.push({
+          AND: [
+            { firstName: { contains: rest } },
+            { lastName: { contains: first } },
+          ],
+        });
+      }
+
+      where.OR = orConditions;
     }
 
     if (query.departmentId) {
@@ -37,9 +59,22 @@ export class EmployeesService {
       where.status = query.status;
     }
 
-    const allowedSortFields = ['employeeCode', 'firstName', 'lastName', 'email', 'jobTitle', 'status', 'createdAt', 'hireDate'];
-    const sortBy = allowedSortFields.includes(query.sortBy) ? query.sortBy : 'createdAt';
-    const sortOrder = query.sortOrder === 'asc' ? 'asc' : 'desc';
+    const sortOrder = query.sortOrder === 'desc' ? 'desc' : 'asc';
+    let orderBy: Prisma.EmployeeOrderByWithRelationInput[] = [{ employeeCode: 'asc' }];
+
+    if (query.sortBy === 'firstName' || query.sortBy === 'name') {
+      orderBy = [{ firstName: sortOrder }, { lastName: sortOrder }, { employeeCode: 'asc' }];
+    } else if (query.sortBy === 'lastName') {
+      orderBy = [{ lastName: sortOrder }, { firstName: sortOrder }, { employeeCode: 'asc' }];
+    } else if (query.sortBy === 'department') {
+      orderBy = [{ department: { name: sortOrder } }, { employeeCode: 'asc' }];
+    } else if (query.sortBy === 'country') {
+      orderBy = [{ country: { name: sortOrder } }, { employeeCode: 'asc' }];
+    } else if (['employeeCode', 'jobTitle', 'status', 'hireDate', 'createdAt'].includes(query.sortBy || '')) {
+      orderBy = [{ [query.sortBy as string]: sortOrder }, { employeeCode: 'asc' }];
+    } else {
+      orderBy = [{ employeeCode: 'asc' }];
+    }
 
     const [total, items] = await Promise.all([
       this.prisma.employee.count({ where }),
@@ -47,7 +82,7 @@ export class EmployeesService {
         where,
         skip,
         take: limit,
-        orderBy: { [sortBy]: sortOrder },
+        orderBy,
         include: {
           department: true,
           country: true,

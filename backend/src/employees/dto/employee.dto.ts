@@ -87,28 +87,40 @@ export class UpdateEmployeeStatusDto {
   status: string;
 }
 
+import { Type } from 'class-transformer';
+
 export class QueryEmployeesDto {
   @ApiPropertyOptional({ example: 1, default: 1 })
+  @IsOptional()
+  @Type(() => Number)
   page?: number = 1;
 
   @ApiPropertyOptional({ example: 25, default: 25 })
+  @IsOptional()
+  @Type(() => Number)
   limit?: number = 25;
 
   @ApiPropertyOptional({ description: 'Search term for name, email, or code' })
+  @IsOptional()
   search?: string;
 
   @ApiPropertyOptional({ description: 'Filter by Department ID' })
+  @IsOptional()
   departmentId?: string;
 
   @ApiPropertyOptional({ description: 'Filter by Country ID' })
+  @IsOptional()
   countryId?: string;
 
   @ApiPropertyOptional({ description: 'Filter by Status (ACTIVE, INACTIVE, ON_LEAVE)' })
+  @IsOptional()
   status?: string;
 
-  @ApiPropertyOptional({ example: 'employeeCode', default: 'createdAt' })
-  sortBy?: string = 'createdAt';
+  @ApiPropertyOptional({ example: 'employeeCode', default: 'employeeCode' })
+  @IsOptional()
+  sortBy?: string = 'employeeCode';
 
-  @ApiPropertyOptional({ example: 'asc', default: 'desc' })
-  sortOrder?: 'asc' | 'desc' = 'desc';
+  @ApiPropertyOptional({ example: 'asc', default: 'asc' })
+  @IsOptional()
+  sortOrder?: 'asc' | 'desc' = 'asc';
 }

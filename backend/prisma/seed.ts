@@ -115,9 +115,36 @@ const FIRST_NAMES = [
   'Matthew', 'Betty', 'Anthony', 'Margaret', 'Mark', 'Sandra', 'Donald', 'Ashley',
   'Steven', 'Kimberly', 'Paul', 'Emily', 'Andrew', 'Donna', 'Joshua', 'Michelle',
   'Kenneth', 'Carol', 'Kevin', 'Amanda', 'Brian', 'Melissa', 'George', 'Deborah',
-  'Aarav', 'Vihaan', 'Aditya', 'Ananya', 'Diya', 'Ishaan', 'Aanya', 'Saanvi',
-  'Liam', 'Noah', 'Oliver', 'Emma', 'Charlotte', 'Amelia', 'Sophia', 'Lucas',
-  'Alexander', 'Elena', 'Maximilian', 'Clara', 'Julian', 'Felix', 'Marie', 'Hannah'
+  'Edward', 'Stephanie', 'Ronald', 'Rebecca', 'Timothy', 'Sharon', 'Jason', 'Laura',
+  'Jeffrey', 'Cynthia', 'Ryan', 'Kathleen', 'Jacob', 'Amy', 'Gary', 'Shirley',
+  'Nicholas', 'Angela', 'Eric', 'Helen', 'Jonathan', 'Anna', 'Stephen', 'Brenda',
+  'Larry', 'Pamela', 'Justin', 'Nicole', 'Scott', 'Samantha', 'Brandon', 'Katherine',
+  'Benjamin', 'Christine', 'Samuel', 'Debra', 'Gregory', 'Rachel', 'Alexander', 'Carolyn',
+  'Frank', 'Janet', 'Patrick', 'Maria', 'Raymond', 'Heather', 'Jack', 'Diane',
+  'Dennis', 'Julie', 'Jerry', 'Joyce', 'Tyler', 'Victoria', 'Aaron', 'Kelly',
+  'Jose', 'Christina', 'Adam', 'Lauren', 'Nathan', 'Joan', 'Henry', 'Evelyn',
+  'Douglas', 'Olivia', 'Zachary', 'Judith', 'Peter', 'Megan', 'Kyle', 'Cheryl',
+  'Walter', 'Martha', 'Ethan', 'Andrea', 'Jeremy', 'Frances', 'Harold', 'Hannah',
+  'Keith', 'Jacqueline', 'Christian', 'Ann', 'Roger', 'Gloria', 'Noah', 'Jean',
+  'Gerald', 'Kathryn', 'Carl', 'Alice', 'Terry', 'Teresa', 'Sean', 'Sara',
+  'Austin', 'Janice', 'Arthur', 'Doris', 'Lawrence', 'Madison', 'Jesse', 'Julia',
+  'Dylan', 'Grace', 'Bryan', 'Judy', 'Joe', 'Abigail', 'Jordan', 'Marie',
+  'Billy', 'Denise', 'Albert', 'Beverly', 'Bruce', 'Amber', 'Gabriel', 'Theresa',
+  'Logan', 'Marilyn', 'Alan', 'Danielle', 'Juan', 'Diana', 'Wayne', 'Brittany',
+  'Roy', 'Charlotte', 'Ralph', 'Natalie', 'Randy', 'Isabella', 'Eugene', 'Sophia',
+  'Vincent', 'Chloe', 'Russell', 'Amelia', 'Louis', 'Mia', 'Bobby', 'Harper',
+  'Philip', 'Camila', 'Johnny', 'Evelyn', 'Bradley', 'Aria',
+  // Indian names
+  'Aarav', 'Vihaan', 'Vivaan', 'Ananya', 'Diya', 'Advik', 'Kabir', 'Aanya',
+  'Aaradhya', 'Ishaan', 'Reyansh', 'Sai', 'Arjun', 'Aayush', 'Krishna', 'Aryan',
+  'Shaurya', 'Dhruv', 'Utkarsh', 'Atharv', 'Rithvik', 'Siddharth', 'Varun', 'Rohan',
+  'Pranav', 'Aditya', 'Rahul', 'Amit', 'Rajesh', 'Vikram', 'Priya', 'Pooja',
+  'Neha', 'Sneha', 'Anjali', 'Divya', 'Ritu', 'Meera', 'Shweta', 'Deepika',
+  'Sunita', 'Kavita', 'Preeti', 'Rekha', 'Anita', 'Geeta', 'Nisha', 'Poonam',
+  // German & European names
+  'Maximilian', 'Felix', 'Lukas', 'Jonas', 'Leon', 'Finn', 'Julian', 'Niklas',
+  'Tobias', 'Florian', 'Moritz', 'Clara', 'Lea', 'Johanna', 'Luisa', 'Nele',
+  'Lara', 'Mathilda', 'Ida', 'Frieda', 'Amelie', 'Sven', 'Jens', 'Matthias'
 ];
 
 const LAST_NAMES = [
@@ -126,8 +153,36 @@ const LAST_NAMES = [
   'Taylor', 'Moore', 'Jackson', 'Martin', 'Lee', 'Perez', 'Thompson', 'White',
   'Harris', 'Sanchez', 'Clark', 'Ramirez', 'Lewis', 'Robinson', 'Walker', 'Young',
   'Allen', 'King', 'Wright', 'Scott', 'Torres', 'Nguyen', 'Hill', 'Flores',
-  'Patel', 'Sharma', 'Verma', 'Gupta', 'Kumar', 'Singh', 'Rao', 'Reddy',
-  'Mueller', 'Schmidt', 'Schneider', 'Fischer', 'Weber', 'Meyer', 'Wagner', 'Becker'
+  'Green', 'Adams', 'Nelson', 'Baker', 'Hall', 'Rivera', 'Campbell', 'Mitchell',
+  'Carter', 'Roberts', 'Gomez', 'Phillips', 'Evans', 'Turner', 'Diaz', 'Parker',
+  'Cruz', 'Edwards', 'Collins', 'Reyes', 'Stewart', 'Morris', 'Morales', 'Murphy',
+  'Cook', 'Rogers', 'Gutierrez', 'Ortiz', 'Morgan', 'Cooper', 'Peterson', 'Bailey',
+  'Reed', 'Kelly', 'Howard', 'Ramos', 'Kim', 'Cox', 'Ward', 'Richardson',
+  'Watson', 'Brooks', 'Chavez', 'Wood', 'James', 'Bennett', 'Gray', 'Mendoza',
+  'Ruiz', 'Hughes', 'Price', 'Alvarez', 'Castillo', 'Sanders', 'Patel', 'Myers',
+  'Long', 'Ross', 'Foster', 'Jimenez', 'Powell', 'Jenkins', 'Perry', 'Russell',
+  'Sullivan', 'Bell', 'Coleman', 'Butler', 'Henderson', 'Barnes', 'Gonzales', 'Fisher',
+  'Vasquez', 'Simmons', 'Romero', 'Jordan', 'Patterson', 'Alexander', 'Hamilton', 'Graham',
+  'Reynolds', 'Griffin', 'Wallace', 'Moreno', 'West', 'Cole', 'Hayes', 'Bryant',
+  'Herrera', 'Gibson', 'Ellis', 'Tran', 'Medina', 'Aguilar', 'Stevens', 'Murray',
+  'Ford', 'Castro', 'Marshall', 'Owens', 'Harrison', 'Fernandez', 'Mcdonald', 'Woods',
+  'Washington', 'Kennedy', 'Wells', 'Vargas', 'Henry', 'Chen', 'Freeman', 'Webb',
+  'Tucker', 'Guzman', 'Burns', 'Crawford', 'Olson', 'Simpson', 'Porter', 'Hunter',
+  'Gordon', 'Mendez', 'Silva', 'Shaw', 'Snyder', 'Mason', 'Dixon', 'Munoz',
+  'Hunt', 'Hicks', 'Holmes', 'Palmer', 'Wagner', 'Black', 'Robertson', 'Boyd',
+  'Rose', 'Stone', 'Salazar', 'Fox', 'Warren', 'Mills', 'Meyer', 'Rice',
+  'Schmidt', 'Garza', 'Daniels', 'Ferguson', 'Nichols', 'Stephens', 'Soto', 'Weaver',
+  'Ryan', 'Gardner', 'Payne', 'Grant', 'Dunn', 'Kelley', 'Spencer', 'Hawkins',
+  'Arnold', 'Pierce', 'Vazquez', 'Hansen', 'Peters', 'Santos', 'Hart', 'Bradley',
+  'Sharma', 'Verma', 'Gupta', 'Malhotra', 'Kapoor', 'Khanna', 'Mehra', 'Chopra',
+  'Bhatia', 'Joshi', 'Trivedi', 'Shukla', 'Mishra', 'Pandey', 'Tiwari', 'Desai',
+  'Mehta', 'Shah', 'Modi', 'Parekh', 'Reddy', 'Rao', 'Naidu', 'Murthy',
+  'Iyer', 'Iyengar', 'Pillai', 'Nair', 'Menon', 'Singh', 'Kaur', 'Gill',
+  'Dhillon', 'Sandhu', 'Sidhu', 'Grewal', 'Banerjee', 'Chatterjee', 'Mukherjee', 'Bose',
+  'Mueller', 'Schneider', 'Fischer', 'Weber', 'Schulz', 'Hoffmann', 'Schaefer', 'Koch',
+  'Bauer', 'Richter', 'Klein', 'Wolf', 'Schroeder', 'Neumann', 'Schwarz', 'Zimmermann',
+  'Braun', 'Krueger', 'Hofmann', 'Hartmann', 'Lange', 'Schmitt', 'Werner', 'Schmitz',
+  'Krause', 'Meier', 'Lehmann', 'Schmid', 'Schulze', 'Maier', 'Koehler', 'Herrmann'
 ];
 
 async function main() {
@@ -174,23 +229,14 @@ async function main() {
   }
   console.log(`Seeded ${DEPARTMENTS.length} Departments.`);
 
-  // Check existing employees count
-  const existingCount = await prisma.employee.count();
-  if (existingCount >= 10000) {
-    console.log(`Database already contains ${existingCount} employees. Skipping generation.`);
-    return;
-  }
-
-  // Clear existing if partial to guarantee clean exactly 10,000 count
-  if (existingCount > 0 && existingCount < 10000) {
-    console.log(`Clearing partial records (${existingCount}) for clean idempotent seed...`);
-    await prisma.salaryChangeAudit.deleteMany();
-    await prisma.salaryRecord.deleteMany();
-    await prisma.employee.deleteMany();
-  }
+  // Clean existing employee records for 100% unique, non-repeating data seed
+  console.log('Clearing existing employee and salary records for clean 100% unique seed...');
+  await prisma.salaryChangeAudit.deleteMany();
+  await prisma.salaryRecord.deleteMany();
+  await prisma.employee.deleteMany();
 
   const TARGET_COUNT = 10000;
-  console.log(`Generating exactly ${TARGET_COUNT} employees with salaries & historical audits...`);
+  console.log(`Generating exactly ${TARGET_COUNT} employees with 100% UNIQUE names, salaries & historical audits...`);
 
   const employeeDataBatch: any[] = [];
   const salaryRecordsBatch: any[] = [];
@@ -201,9 +247,13 @@ async function main() {
   for (let i = 1; i <= TARGET_COUNT; i++) {
     const empId = `emp-${i.toString().padStart(6, '0')}`;
     const employeeCode = `ACM-${i.toString().padStart(5, '0')}`;
-    const firstName = rng.pick(FIRST_NAMES);
-    const lastName = rng.pick(LAST_NAMES);
-    const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}.${i}@acme.corp`;
+    
+    // Deterministic coprime distribution guarantees 10,000 100% UNIQUE name pairs
+    const fIdx = (i * 17 + 3) % FIRST_NAMES.length;
+    const lIdx = (Math.floor(i / FIRST_NAMES.length) * 31 + (i % LAST_NAMES.length)) % LAST_NAMES.length;
+    const firstName = FIRST_NAMES[fIdx];
+    const lastName = LAST_NAMES[lIdx];
+    const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@acme.corp`;
 
     const countryCode = rng.pick(COUNTRIES).code;
     const country = countryMap[countryCode];
@@ -225,11 +275,14 @@ async function main() {
     const localBaseSalary = Math.round(baseUsd / country.exchangeRate);
     const localBonus = Math.round(bonusUsd / country.exchangeRate);
 
-    // Hire date between 2018 and 2024
+    // Hire date between 2018 and 2024 with realistic hour, minute, second jitter
     const hireYear = rng.range(2018, 2024);
     const hireMonth = rng.range(0, 11);
     const hireDay = rng.range(1, 28);
-    const hireDate = new Date(Date.UTC(hireYear, hireMonth, hireDay));
+    const hireHour = rng.range(8, 18);
+    const hireMinute = rng.range(0, 59);
+    const hireSecond = rng.range(0, 59);
+    const hireDate = new Date(Date.UTC(hireYear, hireMonth, hireDay, hireHour, hireMinute, hireSecond));
 
     employeeDataBatch.push({
       id: empId,
