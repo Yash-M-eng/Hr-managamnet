@@ -68,16 +68,16 @@ export function FloatingAiChatbot() {
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Hide on login page or when already on dedicated /ai-assistant page
-  if (pathname === '/login' || pathname === '/ai-assistant' || !user) {
-    return null;
-  }
-
   useEffect(() => {
     if (isOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, isOpen]);
+
+  // Hide on login page or when already on dedicated /ai-assistant page
+  if (pathname === '/login' || pathname === '/ai-assistant' || !user) {
+    return null;
+  }
 
   const handleSend = async (queryText?: string) => {
     const q = (queryText || input).trim();
