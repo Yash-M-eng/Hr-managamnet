@@ -3,6 +3,14 @@ import { GoogleGenAI } from '@google/genai';
 import { AnalyticsService } from '../analytics/analytics.service';
 import { PrismaService } from '../prisma/prisma.service';
 
+// Polyfill BigInt.prototype.toJSON to prevent JSON serialization errors
+if (typeof BigInt !== 'undefined') {
+  (BigInt.prototype as any).toJSON = function () {
+    const intVal = Number(this);
+    return Number.isSafeInteger(intVal) ? intVal : this.toString();
+  };
+}
+
 export interface AiResponse {
   answer: string;
   intent: string;
@@ -104,7 +112,8 @@ export class AiAssistantService {
           const validation = this.validateSqlSafety(generatedSql);
           if (validation.isValid) {
             this.logger.log(`Executing safe validated SQL: ${validation.sanitizedSql}`);
-            const queryResults = await this.prisma.$queryRawUnsafe(validation.sanitizedSql);
+            const rawResults = await this.prisma.$queryRawUnsafe(validation.sanitizedSql);
+            const queryResults = this.sanitizeBigInt(rawResults);
             const naturalAnswer = await this.synthesizeAnswer(cleanQuestion, queryResults);
             return {
               answer: naturalAnswer,
@@ -652,6 +661,25 @@ Requirements:
       return `Here is the data found from your request:\n\n${preview}`;
     }
 
-    return `Based on our payroll data: ${JSON.stringify(results)}`;
+    return `Based on our payroll data: ${JSON.stringify(this.sanitizeBigInt(results))}`;
+  }
+
+  public sanitizeBigInt(data: any): any {
+    if (data === null || data === undefined) return data;
+    if (typeof data === 'bigint') {
+      const num = Number(data);
+      return Number.isSafeInteger(num) ? num : data.toString();
+    }
+    if (Array.isArray(data)) {
+      return data.map((item) => this.sanitizeBigInt(item));
+    }
+    if (typeof data === 'object') {
+      const res: any = {};
+      for (const [key, value] of Object.entries(data)) {
+        res[key] = this.sanitizeBigInt(value);
+      }
+      return res;
+    }
+    return data;
   }
 }
