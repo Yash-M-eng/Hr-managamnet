@@ -265,9 +265,10 @@ ${JSON.stringify(data, null, 2)}`,
 
       case 'COUNTRY_AVERAGE':
         if (data.countryName) {
-          return `In ${data.countryName} (${data.countryCode}), the average annual base salary is $${data.avgSalaryUSD.toLocaleString()} USD (paid in ${data.currency}) across ${data.employeeCount.toLocaleString()} active employees. Salaries range between $${data.minSalaryUSD.toLocaleString()} USD and $${data.maxSalaryUSD.toLocaleString()} USD.`;
+          const minStr = data.minSalaryUSD != null ? ` Salaries range between $${data.minSalaryUSD.toLocaleString()} USD and $${data.maxSalaryUSD.toLocaleString()} USD.` : '';
+          return `In ${data.countryName} (${data.countryCode}), the average annual base salary is $${data.avgSalaryUSD?.toLocaleString() || 0} USD (paid in ${data.currency}) across ${data.employeeCount?.toLocaleString() || 0} active employees.${minStr}`;
         }
-        return `The highest average paying country is ${data.highestPayingCountry.countryName} (${data.highestPayingCountry.countryCode}) with an average salary of $${data.highestPayingCountry.avgSalaryUSD.toLocaleString()} USD across ${data.highestPayingCountry.employeeCount.toLocaleString()} employees.`;
+        return `The highest average paying country is ${data.highestPayingCountry.countryName} (${data.highestPayingCountry.countryCode}) with an average salary of $${data.highestPayingCountry.avgSalaryUSD?.toLocaleString() || 0} USD across ${data.highestPayingCountry.employeeCount?.toLocaleString() || 0} employees.`;
 
       case 'DEPARTMENT_AVERAGE':
         if (data.departmentName) {
