@@ -16,11 +16,11 @@ describe('AiAssistantService', () => {
       medianAnnualBaseSalaryUSD: 98000,
     }),
     getByCountry: jest.fn().mockResolvedValue([
-      { countryCode: 'USA', countryName: 'United States', currency: 'USD', avgSalaryUSD: 125000, employeeCount: 2500 },
-      { countryCode: 'IND', countryName: 'India', currency: 'INR', avgSalaryUSD: 82000, employeeCount: 2000 },
+      { countryCode: 'USA', countryName: 'United States', currency: 'USD', avgSalaryUSD: 125000, employeeCount: 2500, totalSalaryUSD: 312500000 },
+      { countryCode: 'IND', countryName: 'India', currency: 'INR', avgSalaryUSD: 82000, employeeCount: 2000, totalSalaryUSD: 164000000 },
     ]),
     getByDepartment: jest.fn().mockResolvedValue([
-      { departmentCode: 'ENG', departmentName: 'Engineering', avgSalaryUSD: 140000, employeeCount: 3000 },
+      { departmentCode: 'ENG', departmentName: 'Engineering', avgSalaryUSD: 140000, avgTotalCompUSD: 155000, employeeCount: 3000 },
     ]),
     getDistribution: jest.fn().mockResolvedValue([
       { tier: '$100k - $150k', count: 4200 },

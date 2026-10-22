@@ -90,8 +90,8 @@ export class AiAssistantService {
     // 2. STRICT OUT-OF-SCOPE FILTER: Politely decline non-organization queries
     if (this.isOutOfScope(qLower)) {
       return {
-        answer: "I apologize, but I am specifically trained to assist with **ACME Organization's HR, payroll, employee compensation, and salary analytics**.\n\nI cannot answer questions about external topics, politics, celebrities, or general world knowledge. Please ask a question related to our internal departments, employees, or payroll data, and I'll be glad to help!",
-        intent: 'OUT_OF_SCOPE',
+        answer: "I apologize, but I can only answer analytical questions regarding **ACME Organization's HR, payroll, employee compensation, and salary analytics**.\n\nI cannot answer questions about external topics, politics, celebrities, or general world knowledge. Please ask a question related to our internal departments, employees, or payroll data, and I'll be glad to help!",
+        intent: 'UNSUPPORTED',
         source: 'FALLBACK_ENGINE',
         providerStatus: this.isQuotaExhausted ? 'FALLBACK_OFFLINE' : (this.aiClient ? 'ONLINE' : 'FALLBACK_OFFLINE'),
         quotaExhausted: this.isQuotaExhausted,
@@ -213,7 +213,7 @@ export class AiAssistantService {
       const overview = await this.analyticsService.getOverview();
       return {
         answer: `ACME's total normalized annual base payroll is **$${overview.totalAnnualBaseSalaryUSD.toLocaleString()} USD** across all ${overview.totalActiveEmployees.toLocaleString()} active employees.\n\nTotal annual compensation (Base + Variable Bonuses) is **$${overview.totalAnnualCompensationUSD.toLocaleString()} USD**, with an average base pay of **$${overview.averageAnnualBaseSalaryUSD.toLocaleString()} USD**.`,
-        intent: 'TOTAL_COMPENSATION',
+        intent: 'OVERVIEW',
         source: 'FALLBACK_ENGINE',
         groundedData: overview,
         providerStatus: this.isQuotaExhausted ? 'FALLBACK_OFFLINE' : (this.aiClient ? 'ONLINE' : 'FALLBACK_OFFLINE'),
@@ -350,7 +350,7 @@ export class AiAssistantService {
       const match = countries.find((c) => c.countryCode === 'IND');
       if (match) {
         return {
-          answer: `In **India (IND)**, we have **${match.employeeCount.toLocaleString()} active employees** with an average annual base salary of **$${match.avgSalaryUSD.toLocaleString()} USD** (paid in INR ₹). Total payroll in India is **$${match.totalSalaryUSD.toLocaleString()} USD**.`,
+          answer: `In **India (IND)**, we have **${match.employeeCount.toLocaleString()} active employees** with an average annual base salary of **$${match.avgSalaryUSD.toLocaleString()} USD** (paid in INR ₹). Total payroll in India is **$${((match as any).totalSalaryUSD || 0).toLocaleString()} USD**.`,
           intent: 'COUNTRY_AVERAGE',
           source: 'FALLBACK_ENGINE',
           groundedData: match,
@@ -365,7 +365,7 @@ export class AiAssistantService {
       const match = countries.find((c) => c.countryCode === 'DEU');
       if (match) {
         return {
-          answer: `In **Germany (DEU)**, we have **${match.employeeCount.toLocaleString()} active employees** with an average annual base salary of **$${match.avgSalaryUSD.toLocaleString()} USD** (paid in EUR €). Total payroll is **$${match.totalSalaryUSD.toLocaleString()} USD**.`,
+          answer: `In **Germany (DEU)**, we have **${match.employeeCount.toLocaleString()} active employees** with an average annual base salary of **$${match.avgSalaryUSD.toLocaleString()} USD** (paid in EUR €). Total payroll is **$${((match as any).totalSalaryUSD || 0).toLocaleString()} USD**.`,
           intent: 'COUNTRY_AVERAGE',
           source: 'FALLBACK_ENGINE',
           groundedData: match,
@@ -380,7 +380,7 @@ export class AiAssistantService {
       const match = countries.find((c) => c.countryCode === 'USA');
       if (match) {
         return {
-          answer: `In the **United States (USA)**, we have **${match.employeeCount.toLocaleString()} active employees** with an average annual base salary of **$${match.avgSalaryUSD.toLocaleString()} USD**. Total annual payroll is **$${match.totalSalaryUSD.toLocaleString()} USD**.`,
+          answer: `In the **United States (USA)**, we have **${match.employeeCount.toLocaleString()} active employees** with an average annual base salary of **$${match.avgSalaryUSD.toLocaleString()} USD**. Total annual payroll is **$${((match as any).totalSalaryUSD || 0).toLocaleString()} USD**.`,
           intent: 'COUNTRY_AVERAGE',
           source: 'FALLBACK_ENGINE',
           groundedData: match,
@@ -395,7 +395,7 @@ export class AiAssistantService {
       const match = countries.find((c) => c.countryCode === 'GBR');
       if (match) {
         return {
-          answer: `In the **United Kingdom (GBR)**, we have **${match.employeeCount.toLocaleString()} active employees** with an average annual base salary of **$${match.avgSalaryUSD.toLocaleString()} USD** (paid in GBP £). Total payroll is **$${match.totalSalaryUSD.toLocaleString()} USD**.`,
+          answer: `In the **United Kingdom (GBR)**, we have **${match.employeeCount.toLocaleString()} active employees** with an average annual base salary of **$${match.avgSalaryUSD.toLocaleString()} USD** (paid in GBP £). Total payroll is **$${((match as any).totalSalaryUSD || 0).toLocaleString()} USD**.`,
           intent: 'COUNTRY_AVERAGE',
           source: 'FALLBACK_ENGINE',
           groundedData: match,
@@ -410,7 +410,7 @@ export class AiAssistantService {
       const match = countries.find((c) => c.countryCode === 'CAN');
       if (match) {
         return {
-          answer: `In **Canada (CAN)**, we have **${match.employeeCount.toLocaleString()} active employees** with an average annual base salary of **$${match.avgSalaryUSD.toLocaleString()} USD** (paid in CAD). Total payroll is **$${match.totalSalaryUSD.toLocaleString()} USD**.`,
+          answer: `In **Canada (CAN)**, we have **${match.employeeCount.toLocaleString()} active employees** with an average annual base salary of **$${match.avgSalaryUSD.toLocaleString()} USD** (paid in CAD). Total payroll is **$${((match as any).totalSalaryUSD || 0).toLocaleString()} USD**.`,
           intent: 'COUNTRY_AVERAGE',
           source: 'FALLBACK_ENGINE',
           groundedData: match,
@@ -425,7 +425,7 @@ export class AiAssistantService {
       const match = countries.find((c) => c.countryCode === 'AUS');
       if (match) {
         return {
-          answer: `In **Australia (AUS)**, we have **${match.employeeCount.toLocaleString()} active employees** with an average annual base salary of **$${match.avgSalaryUSD.toLocaleString()} USD** (paid in AUD). Total payroll is **$${match.totalSalaryUSD.toLocaleString()} USD**.`,
+          answer: `In **Australia (AUS)**, we have **${match.employeeCount.toLocaleString()} active employees** with an average annual base salary of **$${match.avgSalaryUSD.toLocaleString()} USD** (paid in AUD). Total payroll is **$${((match as any).totalSalaryUSD || 0).toLocaleString()} USD**.`,
           intent: 'COUNTRY_AVERAGE',
           source: 'FALLBACK_ENGINE',
           groundedData: match,
@@ -435,13 +435,34 @@ export class AiAssistantService {
       }
     }
 
-    // 8. SPECIFIC DEPARTMENT QUERIES (Engineering, Product, Sales, Marketing, etc.)
+    // 8. THRESHOLD EARNINGS (e.g., "more than 100,000" or "earn more than")
+    if (q.includes('more than') || q.includes('less than') || q.includes('greater than') || q.includes('earn over') || q.includes('earn more')) {
+      const matchNum = q.match(/\d+[\d,]*/);
+      const threshold = matchNum ? parseInt(matchNum[0].replace(/,/g, ''), 10) : 100000;
+      const operator = q.includes('less') ? 'lt' : 'gt';
+      let deptCode: string | undefined;
+      if (q.includes('engineer') || q.includes('eng')) deptCode = 'ENG';
+      else if (q.includes('sales')) deptCode = 'SLS';
+      else if (q.includes('product')) deptCode = 'PROD';
+
+      const count = await this.analyticsService.getThresholdCount(threshold, operator, deptCode);
+      return {
+        answer: `There are currently **${count.toLocaleString()} active employees** in ${deptCode ? `the **${deptCode}** department` : 'ACME globally'} earning ${operator === 'gt' ? 'more than' : 'less than'} **$${threshold.toLocaleString()} USD** annually.`,
+        intent: 'THRESHOLD_COUNT',
+        source: 'FALLBACK_ENGINE',
+        groundedData: { thresholdUSD: threshold, operator, count },
+        providerStatus: this.isQuotaExhausted ? 'FALLBACK_OFFLINE' : (this.aiClient ? 'ONLINE' : 'FALLBACK_OFFLINE'),
+        quotaExhausted: this.isQuotaExhausted,
+      };
+    }
+
+    // 9. SPECIFIC DEPARTMENT QUERIES (Engineering, Product, Sales, Marketing, etc.)
     if (q.includes('engineer') || q.includes('eng')) {
       const depts = await this.analyticsService.getByDepartment();
       const match = depts.find((d) => d.departmentCode === 'ENG');
       if (match) {
         return {
-          answer: `The **Engineering** department currently comprises **${match.employeeCount.toLocaleString()} team members** with an average annual base salary of **$${match.avgSalaryUSD.toLocaleString()} USD** and total compensation averaging **$${match.avgTotalCompUSD.toLocaleString()} USD**.`,
+          answer: `The **Engineering** department currently comprises **${match.employeeCount.toLocaleString()} team members** with an average annual base salary of **$${match.avgSalaryUSD.toLocaleString()} USD** and total compensation averaging **$${((match as any).avgTotalCompUSD || match.avgSalaryUSD || 0).toLocaleString()} USD**.`,
           intent: 'DEPARTMENT_AVERAGE',
           source: 'FALLBACK_ENGINE',
           groundedData: match,
@@ -554,27 +575,6 @@ export class AiAssistantService {
           quotaExhausted: this.isQuotaExhausted,
         };
       }
-    }
-
-    // 9. THRESHOLD EARNINGS (e.g., "more than 100,000" or "earn more than")
-    if (q.includes('more than') || q.includes('less than') || q.includes('greater than') || q.includes('earn over') || q.includes('earn more')) {
-      const matchNum = q.match(/\d+[\d,]*/);
-      const threshold = matchNum ? parseInt(matchNum[0].replace(/,/g, ''), 10) : 100000;
-      const operator = q.includes('less') ? 'lt' : 'gt';
-      let deptCode: string | undefined;
-      if (q.includes('engineer') || q.includes('eng')) deptCode = 'ENG';
-      else if (q.includes('sales')) deptCode = 'SLS';
-      else if (q.includes('product')) deptCode = 'PROD';
-
-      const count = await this.analyticsService.getThresholdCount(threshold, operator, deptCode);
-      return {
-        answer: `There are currently **${count.toLocaleString()} active employees** in ${deptCode ? `the **${deptCode}** department` : 'ACME globally'} earning ${operator === 'gt' ? 'more than' : 'less than'} **$${threshold.toLocaleString()} USD** annually.`,
-        intent: 'THRESHOLD_COUNT',
-        source: 'FALLBACK_ENGINE',
-        groundedData: { thresholdUSD: threshold, operator, count },
-        providerStatus: this.isQuotaExhausted ? 'FALLBACK_OFFLINE' : (this.aiClient ? 'ONLINE' : 'FALLBACK_OFFLINE'),
-        quotaExhausted: this.isQuotaExhausted,
-      };
     }
 
     // 10. GENERAL OVERVIEW
