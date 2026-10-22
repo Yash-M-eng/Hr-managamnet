@@ -172,7 +172,8 @@ export class AiAssistantService {
       'salary', 'salaries', 'employee', 'employees', 'department', 'departments',
       'payroll', 'country', 'countries', 'bonus', 'staff', 'comp', 'compensation',
       'headcount', 'earning', 'earn', 'pay', 'paid', 'hire', 'hired', 'overview',
-      'tier', 'bracket', 'distribution', 'spread', 'active', 'inactive', 'exchange rate'
+      'tier', 'bracket', 'distribution', 'spread', 'active', 'inactive', 'exchange rate',
+      'latest', 'recent', 'newest', 'join', 'joined', 'hiring'
     ];
     const words = q.split(/\s+/);
     const hasValidTerm = words.some((w) => validTerms.some((vt) => w.includes(vt)));
@@ -248,7 +249,74 @@ export class AiAssistantService {
       };
     }
 
-    // 5. ALL DEPARTMENTS LIST
+    // 5. LATEST & RECENT EMPLOYEES
+    if (
+      q.includes('latest employees') ||
+      q.includes('recent employees') ||
+      q.includes('newest employees') ||
+      q.includes('recently hired employees')
+    ) {
+      const recents = await this.prisma.employee.findMany({
+        orderBy: [{ hireDate: 'desc' }, { createdAt: 'desc' }],
+        take: 5,
+        include: { department: true, country: true },
+      });
+      const list = recents
+        .map((e) => {
+          const d = new Date(e.hireDate).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          });
+          return `- **${e.firstName} ${e.lastName}** (${e.employeeCode}) - ${e.jobTitle} in **${e.department.name}** (${e.country.name}), joined ${d}`;
+        })
+        .join('\n');
+      return {
+        answer: `Here are the **${recents.length} most recently hired employees** in ACME:\n\n${list}`,
+        intent: 'RECENT_EMPLOYEES_LIST',
+        source: 'FALLBACK_ENGINE',
+        groundedData: recents,
+        providerStatus: this.isQuotaExhausted ? 'FALLBACK_OFFLINE' : (this.aiClient ? 'ONLINE' : 'FALLBACK_OFFLINE'),
+        quotaExhausted: this.isQuotaExhausted,
+      };
+    }
+
+    if (
+      q.includes('latest employee') ||
+      q.includes('latest employe') ||
+      q.includes('newest employee') ||
+      q.includes('recent employee') ||
+      q.includes('recently hired') ||
+      q.includes('recently joined') ||
+      q.includes('last hired') ||
+      q.includes('last employee') ||
+      q.includes('latest hire') ||
+      q.includes('newest hire') ||
+      q.includes('latest joiner') ||
+      (q.includes('latest') && (q.includes('name') || q.includes('naam')))
+    ) {
+      const latest = await this.prisma.employee.findFirst({
+        orderBy: [{ hireDate: 'desc' }, { createdAt: 'desc' }],
+        include: { department: true, country: true },
+      });
+      if (latest) {
+        const hireDateStr = new Date(latest.hireDate).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+        return {
+          answer: `The most recently hired employee in our records is **${latest.firstName} ${latest.lastName}** (Employee Code: **${latest.employeeCode}**).\n\n- **Position**: ${latest.jobTitle}\n- **Department**: ${latest.department.name} (${latest.department.code})\n- **Location**: ${latest.country.name} (${latest.country.code})\n- **Hire Date**: ${hireDateStr}\n- **Current Status**: ${latest.status}`,
+          intent: 'LATEST_EMPLOYEE',
+          source: 'FALLBACK_ENGINE',
+          groundedData: latest,
+          providerStatus: this.isQuotaExhausted ? 'FALLBACK_OFFLINE' : (this.aiClient ? 'ONLINE' : 'FALLBACK_OFFLINE'),
+          quotaExhausted: this.isQuotaExhausted,
+        };
+      }
+    }
+
+    // 6. ALL DEPARTMENTS LIST
     if (q.includes('all department') || q.includes('department list') || q.includes('departments name') || q.includes('list of department')) {
       const depts = await this.analyticsService.getByDepartment();
       const list = depts.map((d) => `- **${d.departmentName}** (Code: ${d.departmentCode}, Headcount: ${d.employeeCount.toLocaleString()}, Avg Base: $${d.avgSalaryUSD.toLocaleString()} USD)`).join('\n');
