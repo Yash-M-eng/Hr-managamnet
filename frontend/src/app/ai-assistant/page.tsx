@@ -233,27 +233,14 @@ export default function AiAssistantPage() {
                   <div className="whitespace-pre-wrap leading-relaxed">{m.text}</div>
                 )}
 
-                {/* Clear Origin Badge: Tells user whether answer is from Gemini LLM or Verified DB Fallback */}
-                {m.sender === 'assistant' && m.source && (
-                  <div className="mt-2.5 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px]">
-                    <span className={`inline-flex items-center gap-1.5 font-medium px-2 py-0.5 rounded-md ${
-                      m.source === 'GEMINI_LLM' 
-                        ? 'bg-blue-50 text-[#1864f7] border border-blue-200/60' 
-                        : 'bg-emerald-50 text-emerald-700 border border-emerald-200/60'
-                    }`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${m.source === 'GEMINI_LLM' ? 'bg-[#1864f7]' : 'bg-emerald-500'}`}></span>
-                      <span>Source: {m.source === 'GEMINI_LLM' ? 'Google Gemini LLM' : 'Verified DB Analytics Engine'}</span>
-                    </span>
-                    <span className="text-slate-400 font-medium">{m.timestamp}</span>
-                  </div>
-                )}
-
-                {/* User message timestamp */}
-                {m.sender === 'user' && (
-                  <div className="text-[10px] text-right mt-2 font-medium text-blue-100">
-                    {m.timestamp}
-                  </div>
-                )}
+                {/* Message Timestamp */}
+                <div
+                  className={`text-[10px] text-right mt-1.5 font-medium ${
+                    m.sender === 'user' ? 'text-blue-100' : 'text-slate-400'
+                  }`}
+                >
+                  {m.timestamp}
+                </div>
               </div>
             </div>
           ))}
