@@ -1,0 +1,58 @@
+# Render Infrastructure Blueprint Specification
+# Deploys Full-Stack ACME Salary Management System (Backend, Frontend, and Database)
+
+services:
+  # 1. NestJS Backend Web Service & SQLite Database Engine
+  - type: web
+    name: acme-salary-backend
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: backend
+    buildCommand: npm install && npm run render:build
+    startCommand: npm run start:prod
+    healthCheckPath: /api/docs
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        value: "file:./dev.db"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: WEB_ORIGIN
+        value: "https://acme-salary-frontend.onrender.com"
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: DEMO_HR_EMAIL
+        value: hr.manager@acme.corp
+      - key: DEMO_HR_PASSWORD
+        value: AcmeHR2026!Secure
+
+  # 2. Next.js Frontend Web Service
+  - type: web
+    name: acme-salary-frontend
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    healthCheckPath: /login
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: acme-salary-backend
+          property: host
+      - key: NEXT_PUBLIC_DEMO_HR_EMAIL
+        value: hr.manager@acme.corp
+      - key: NEXT_PUBLIC_DEMO_HR_PASSWORD
+        value: AcmeHR2026!Secure

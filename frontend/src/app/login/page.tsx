@@ -6,9 +6,12 @@ import { api } from '@/lib/api';
 import { useAuth } from '@/lib/auth-context';
 import { Building2, Lock, Mail, ArrowRight, ShieldAlert, Sparkles } from 'lucide-react';
 
+const DEFAULT_EMAIL = process.env.NEXT_PUBLIC_DEMO_HR_EMAIL || 'hr.manager@acme.corp';
+const DEFAULT_PASSWORD = process.env.NEXT_PUBLIC_DEMO_HR_PASSWORD || 'AcmeHR2026!Secure';
+
 export default function LoginPage() {
-  const [email, setEmail] = useState('hr.manager@acme.corp');
-  const [password, setPassword] = useState('AcmeHR2026!Secure');
+  const [email, setEmail] = useState(DEFAULT_EMAIL);
+  const [password, setPassword] = useState(DEFAULT_PASSWORD);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,19 +24,27 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      const res = await api.post('/auth/login', { email, password });
+      const res = await api.post('/auth/login', { email: email.trim(), password });
       login(res.data.accessToken, res.data.user);
       router.push('/');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Invalid email or password. Please try again.');
+      if (err.code === 'ERR_NETWORK' || !err.response) {
+        setError(
+          'Unable to reach backend server. If using Render Free tier, the backend service may be waking up from cold sleep (takes ~30-50s). Please wait a moment and try again.'
+        );
+      } else if (err.response?.status === 401) {
+        setError('Invalid email or password. Please verify your credentials or click below to autofill.');
+      } else {
+        setError(err.response?.data?.message || 'Authentication failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
   };
 
   const handleFillDemo = () => {
-    setEmail('hr.manager@acme.corp');
-    setPassword('AcmeHR2026!Secure');
+    setEmail(DEFAULT_EMAIL);
+    setPassword(DEFAULT_PASSWORD);
   };
 
   return (
@@ -119,7 +130,7 @@ export default function LoginPage() {
             <span>Click to fill default Seeded HR credentials</span>
           </button>
           <p className="text-[11px] text-slate-500 mt-1 font-mono">
-            Email: hr.manager@acme.corp | Pass: AcmeHR2026!Secure
+            Email: {DEFAULT_EMAIL} | Pass: {DEFAULT_PASSWORD}
           </p>
         </div>
       </div>

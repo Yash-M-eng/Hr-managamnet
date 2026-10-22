@@ -1,6 +1,43 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const getBaseUrl = (): string => {
+  let url = process.env.NEXT_PUBLIC_API_URL || '';
+
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem('acme_api_url');
+    if (saved) return saved.trim().replace(/\/+$/, '');
+  }
+
+  if (!url) {
+    if (typeof window !== 'undefined') {
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return 'http://localhost:4000';
+      }
+      if (window.location.hostname.endsWith('.onrender.com')) {
+        const backendHost = window.location.hostname.replace('frontend', 'backend');
+        return `https://${backendHost}`;
+      }
+    }
+    return 'http://localhost:4000';
+  }
+
+  url = url.trim().replace(/\/+$/, '');
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    url = `https://${url}`;
+  }
+  if (
+    typeof window !== 'undefined' &&
+    window.location.protocol === 'https:' &&
+    url.startsWith('http://') &&
+    !url.includes('localhost') &&
+    !url.includes('127.0.0.1')
+  ) {
+    url = url.replace(/^http:\/\//, 'https://');
+  }
+  return url;
+};
+
+const API_BASE_URL = getBaseUrl();
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -11,6 +48,9 @@ export const api = axios.create({
 
 // Request interceptor to attach JWT token
 api.interceptors.request.use((config) => {
+  if (!config.baseURL || config.baseURL === 'http://localhost:4000') {
+    config.baseURL = getBaseUrl();
+  }
   if (typeof window !== 'undefined') {
     const token = localStorage.getItem('acme_auth_token');
     if (token) {

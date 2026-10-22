@@ -120,7 +120,7 @@ export default function EmployeeDetailPage() {
   const currentSalary = employee.salaries?.find((s: any) => s.isCurrent) || employee.salaries?.[0];
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto">
+    <div className="flex-1 min-h-0 h-full overflow-y-auto space-y-6 pb-12 pr-1 w-full select-text">
       {/* Top Navigation */}
       <button
         onClick={() => router.push('/employees')}
